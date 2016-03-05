@@ -81,14 +81,5 @@ void publish_uptime()
   mqtt_client.publish(prog_buffer, char_buffer);
 }
 
-void publish_pir_status()
-{
-  prog_buffer[0] = '\0';
-  strcpy_P(prog_buffer, (char*)pgm_read_word(&(STATUS_TOPICS[7])));
-  char_buffer[0] = '\0';
-  ltoa(millis(), char_buffer, 10);
-  mqtt_client.publish(prog_buffer, char_buffer);
-}
-
 
 #endif   /* FRONTPORCHIOTMODULE_MQTTCONFIG_H_ */

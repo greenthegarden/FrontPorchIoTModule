@@ -130,7 +130,7 @@ void loop()
 
   if (currentMillis - pirPreviousMillis >= pirInterval) {
     pirPreviousMillis = currentMillis;
-    pirDetection();
+    publish_pir_status();
   }
   
   if (currentMillis - dht22PreviousMillis >= dht22Interval) {
