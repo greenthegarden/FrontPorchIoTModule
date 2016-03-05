@@ -1,0 +1,52 @@
+import org.openhab.core.library.types.*
+//import org.openhab.core.library.items.*
+import org.openhab.core.persistence.*
+import org.openhab.model.script.actions.*
+
+//var java.util.concurrent.locks.ReentrantLock lock = new java.util.concurrent.locks.ReentrantLock()
+
+rule "Startup"
+	when
+		System started
+	then
+		sendCommand(Master, OFF)
+		postUpdate(LightColour, 0)
+		sendCommand(Led_Off, ON)
+		sendCommand(Green, OFF)
+		sendCommand(Red, OFF)
+		sendCommand(Blue, OFF)
+		sendCommand(White, OFF)
+end
+
+rule "Master Off"
+	when
+		Item Master received command OFF
+	then
+//		if (Led_Off.state == OFF)
+			sendCommand(Led_Off, ON)
+//		if (Led_Off.state == ON)
+end
+
+/**
+ * This rule demonstrates how a NumberItem can be used to easily control the local sound system.
+ * A selection widget in the UI provides easy access for this
+ */
+rule "Select Colour"
+	when
+		Item LightColour received command or
+		Item Master received command ON
+	then
+//		switch(receivedCommand) {
+//			case 0 : sendCommand(Led_Off, ON)
+//			case 1 : sendCommand(Green, ON)
+//			case 2 : sendCommand(Red, ON)
+//			case 3 : sendCommand(Blue, ON)
+//			case 4 : sendCommand(White, ON)
+//		}
+		if (LightColour.state == 0) sendCommand(Led_Off, ON)
+		else if (LightColour.state == 1) sendCommand(Green, ON)
+		else if (LightColour.state == 2) sendCommand(Red, ON)
+		else if (LightColour.state == 3) sendCommand(Blue, ON)
+		else if (LightColour.state == 4) sendCommand(White, ON)
+end
+
