@@ -12,10 +12,14 @@ void publish_pir_status()
 {
   prog_buffer[0] = '\0';
   strcpy_P(prog_buffer, (char*)pgm_read_word(&(STATUS_TOPICS[7])));
-  if(digitalRead(PIR_SENSOR_PIN) == HIGH)
+  if(digitalRead(PIR_SENSOR_PIN) == HIGH) {
+    DEBUG_LOG(1, "pir sensor detection");
     mqtt_client.publish(prog_buffer, "1");
-  else    
+  }
+  else {
+    DEBUG_LOG(1, "pir sensor NO detection");
     mqtt_client.publish(prog_buffer, "0");
+  }
 }
 
 

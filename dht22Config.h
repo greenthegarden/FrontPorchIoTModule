@@ -60,10 +60,10 @@ void publish_dht22_measurement()
   // READ DATA
   int chk = DHT.read22(DHT22_PIN);
 
-  DEBUG_LOG(3, "DHT22 read state");
-  DEBUG_LOG(3, "  value: ");
-  DEBUG_LOG(3, chk);
-  DEBUG_LOG(3, "  string: ");
+  DEBUG_LOG(1, "DHT22 read state");
+  DEBUG_LOG(1, "  value: ");
+  DEBUG_LOG(1, chk);
+  DEBUG_LOG(1, "  string: ");
 
   prog_buffer[0] = '\0';
   strcpy_P(prog_buffer, (char*)pgm_read_word(&(STATUS_TOPICS[8])));

@@ -5,7 +5,8 @@
 #include <PubSubClient.h>
 
 // MQTT parameters
-byte mqtt_server_addr[]           = { 192, 168, 1, 30 };  // Pi eth0 interface
+//byte mqtt_server_addr[]           = { 192, 168, 1, 30 };  // Airology
+byte mqtt_server_addr[]           = { 192, 168, 1, 55 };  // Pi eth0 interface
 char mqtt_client_id[]             = "porchlight";
 const int MQTT_PORT               = 1883;
 #define MQTT_MAX_PACKET_SIZE        168
