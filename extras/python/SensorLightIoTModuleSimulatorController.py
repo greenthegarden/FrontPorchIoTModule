@@ -7,9 +7,9 @@
 
 # see https://wiki.python.org/moin/ConfigParserShootout
 from configobj import ConfigObj
-config = ConfigObj('Duinotech595MqttController.cfg')
+config = ConfigObj('SensorLightIoTModule.cfg')
 
-print("{0}".format("Duinotech 595 MQTT Controller Simulator"))
+print("{0}".format("Sensor Light IoT MQTT Controller Simulator"))
 
 
 #---------------------------------------------------------------------------------------

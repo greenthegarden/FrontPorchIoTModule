@@ -93,13 +93,19 @@ void setup()
 #if DEBUG_LEVEL > 0
   Serial.begin(BAUD_RATE);
 #endif
-  // Configure Ethernet
-  Ethernet.begin(mac, ip);
-  delay(1500);
 
   // set up for Duinotech 595
   duinotech595.init();
-  
+  duinotech595.sequenceTest();  
+
+  // Configure Ethernet
+  Ethernet.begin(mac, ip);
+  delay(1500);
+  if (mqtt_client.connected())
+    duinotech595.blinkOk(3);
+  else
+    duinotech595.blinkError(5);
+
   // set up for PIR sensor
   pinMode(PIR_SENSOR_PIN, INPUT);
 
@@ -116,11 +122,14 @@ void loop()
 
   if (!mqtt_client.connected()) {
     long now = millis();
-    if (now - lastReconnectAttempt > 5000) {
+    if (now - lastReconnectAttempt > reconnectInterval) {
       lastReconnectAttempt = now;
       // Attempt to reconnect
       if (mqtt_connect()) {
         lastReconnectAttempt = 0;
+      }
+      else {
+        duinotech595.blinkError(2);
       }
     }
   } else {
