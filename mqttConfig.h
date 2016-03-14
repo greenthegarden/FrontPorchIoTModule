@@ -9,8 +9,8 @@
 byte mqtt_server_addr[]               = { 192, 168, 1, 55 };  // Pi eth0 interface
 char mqtt_client_id[]                 = "porchlight";
 const int MQTT_PORT                   = 1883;
-#define MQTT_MAX_PACKET_SIZE            168
-#define MQTT_KEEPALIVE                  300
+//#define MQTT_MAX_PACKET_SIZE            168
+//#define MQTT_KEEPALIVE                  300
 
 unsigned long lastReconnectAttempt    = 0;
 const unsigned long reconnectInterval = 30UL * 1000UL;  // attempt to reconnect every 30 seconds
@@ -59,20 +59,20 @@ PGM_P const CONTROL_TOPICS[]    PROGMEM = { LED_CONTROL,         // idx = 0
 // callback function definition
 void callback(char* topic, uint8_t* payload, unsigned int length);
 
-PubSubClient   mqtt_client(mqtt_server_addr, MQTT_PORT, callback, ethernet_client);
+PubSubClient   mqttClient(mqtt_server_addr, MQTT_PORT, callback, ethernetClient);
 
 void publish_connected()
 {
   prog_buffer[0] = '\0';
   strcpy_P(prog_buffer, (char*)pgm_read_word(&(STATUS_TOPICS[0])));
-  mqtt_client.publish(prog_buffer, "");
+  mqttClient.publish(prog_buffer, "");
 }
 
 void publish_ip_address()
 {
   prog_buffer[0] = '\0';
   strcpy_P(prog_buffer, (char*)pgm_read_word(&(STATUS_TOPICS[1])));
-  mqtt_client.publish(prog_buffer, "192.168.1.90");
+  mqttClient.publish(prog_buffer, "192.168.1.90");
 }
 
 void publish_uptime()
@@ -81,7 +81,7 @@ void publish_uptime()
   strcpy_P(prog_buffer, (char*)pgm_read_word(&(STATUS_TOPICS[2])));
   char_buffer[0] = '\0';
   ltoa(millis(), char_buffer, 10);
-  mqtt_client.publish(prog_buffer, char_buffer);
+  mqttClient.publish(prog_buffer, char_buffer);
 }
 
 

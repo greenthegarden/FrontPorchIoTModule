@@ -40,7 +40,7 @@ void publish_temperature_measurement()
   DEBUG_LOG(3, DHT.temperature);
   char_buffer[0] = '\0';
   dtostrf(DHT.temperature, 1, FLOAT_DECIMAL_PLACES, char_buffer);
-  mqtt_client.publish(prog_buffer, char_buffer);
+  mqttClient.publish(prog_buffer, char_buffer);
 }
 
 void publish_humidity_measurement()
@@ -52,7 +52,7 @@ void publish_humidity_measurement()
   DEBUG_LOG(3, DHT.humidity);
   char_buffer[0] = '\0';
   dtostrf(DHT.humidity, 1, FLOAT_DECIMAL_PLACES, char_buffer);
-  mqtt_client.publish(prog_buffer, char_buffer);
+  mqttClient.publish(prog_buffer, char_buffer);
 }
 
 void publish_dht22_measurement()
@@ -73,7 +73,7 @@ void publish_dht22_measurement()
       DEBUG_LOG(3, "OK");
       char_buffer[0] = '\0';
       strcpy_P(char_buffer, (char*)pgm_read_word(&(dht22_status_messages[0])));
-      mqtt_client.publish(prog_buffer, char_buffer);
+      mqttClient.publish(prog_buffer, char_buffer);
       publish_temperature_measurement();
       publish_humidity_measurement();
       break;
@@ -81,37 +81,37 @@ void publish_dht22_measurement()
       DEBUG_LOG(3, "Checksum error");
       char_buffer[0] = '\0';
       strcpy_P(char_buffer, (char*)pgm_read_word(&(dht22_status_messages[1])));
-      mqtt_client.publish(prog_buffer, char_buffer);
+      mqttClient.publish(prog_buffer, char_buffer);
       break;
     case DHTLIB_ERROR_TIMEOUT :
       DEBUG_LOG(3, "Time out error,\t");
       char_buffer[0] = '\0';
       strcpy_P(char_buffer, (char*)pgm_read_word(&(dht22_status_messages[2])));
-      mqtt_client.publish(prog_buffer, char_buffer);
+      mqttClient.publish(prog_buffer, char_buffer);
       break;
     case DHTLIB_ERROR_CONNECT :
       DEBUG_LOG(3, "Connect error");
       char_buffer[0] = '\0';
       strcpy_P(char_buffer, (char*)pgm_read_word(&(dht22_status_messages[3])));
-      mqtt_client.publish(prog_buffer, char_buffer);
+      mqttClient.publish(prog_buffer, char_buffer);
       break;
     case DHTLIB_ERROR_ACK_L :
       DEBUG_LOG(3, "Ack Low error");
       char_buffer[0] = '\0';
       strcpy_P(char_buffer, (char*)pgm_read_word(&(dht22_status_messages[4])));
-      mqtt_client.publish(prog_buffer, char_buffer);
+      mqttClient.publish(prog_buffer, char_buffer);
       break;
     case DHTLIB_ERROR_ACK_H :
       DEBUG_LOG(3, "Ack High error");
       char_buffer[0] = '\0';
       strcpy_P(char_buffer, (char*)pgm_read_word(&(dht22_status_messages[5])));
-      mqtt_client.publish(prog_buffer, char_buffer);
+      mqttClient.publish(prog_buffer, char_buffer);
       break;
     default :
       DEBUG_LOG(3, "Unknown error");
       char_buffer[0] = '\0';
       strcpy_P(char_buffer, (char*)pgm_read_word(&(dht22_status_messages[6])));
-      mqtt_client.publish(prog_buffer, char_buffer);
+      mqttClient.publish(prog_buffer, char_buffer);
       break;
   }
 }

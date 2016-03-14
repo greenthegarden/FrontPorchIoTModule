@@ -2,15 +2,45 @@
 
 boolean mqtt_connect()
 {
-  DEBUG_LOG(1, "connecting to broker");
-  if (mqtt_client.connect(mqtt_client_id)) {
+  DEBUG_LOG(1, "Attempting MQTT connection ...");
+  if (mqttClient.connect(mqtt_client_id)) {
     DEBUG_LOG(1, "  connected");
+    // Once connected, publish an announcement...
     publish_connected();
     publish_ip_address();
-    // subscribe to topics (should have list)
-    mqtt_client.subscribe("porchlight/control/#");
+    // ... and subscribe to topics (should have list)
+    mqttClient.subscribe("porchlight/control/#");
+  } else {
+      DEBUG_LOG(1, "failed, rc=");
+#if DEBUG_LEVEL>0
+      Serial.print(client.state());
+#endif
   }
-  return mqtt_client.connected();
+  return mqttClient.connected();
+}
+
+void reconnect() {
+  // Loop until we're reconnected
+  while (!mqttClient.connected()) {
+    DEBUG_LOG(1, "Attempting MQTT connection ...");
+    // Attempt to connect
+    if (mqttClient.connect(mqtt_client_id)) {
+      DEBUG_LOG(1, "  connected");
+      // Once connected, publish an announcement...
+      publish_connected();
+      publish_ip_address();
+      // ... and subscribe to topics (should have list)
+      mqttClient.subscribe("porchlight/control/#");
+    } else {
+      DEBUG_LOG(1, "failed, rc=");
+#if DEBUG_LEVEL>0
+      Serial.print(client.state());
+#endif
+      DEBUG_LOG(1, " try again in 5 seconds ...");
+      // Wait 5 seconds before retrying
+      delay(5000);
+    }
+  }
 }
 
 void callback(char* topic, uint8_t* payload, unsigned int payload_length)
@@ -94,14 +124,16 @@ void setup()
   Serial.begin(BAUD_RATE);
 #endif
 
-  // set up for Duinotech 595
-  duinotech595.init();
-  duinotech595.sequenceTest();  
-
   // Configure Ethernet
   Ethernet.begin(mac, ip);
+  
+  // set up for Duinotech 595
+  duinotech595.init();
+  duinotech595.sequenceTest(1000,0);
+
+  // Connect to MQTT client
   delay(1500);
-  if (mqtt_client.connected())
+  if (mqttClient.connected())
     duinotech595.blinkOk(3);
   else
     duinotech595.blinkError(5);
@@ -120,7 +152,7 @@ void loop()
 {
   unsigned long currentMillis = millis();
 
-  if (!mqtt_client.connected()) {
+  if (!mqttClient.connected()) {
     long now = millis();
     if (now - lastReconnectAttempt > reconnectInterval) {
       lastReconnectAttempt = now;
@@ -134,7 +166,7 @@ void loop()
     }
   } else {
     // Client connected
-    mqtt_client.loop();
+    mqttClient.loop();
   }
 
   if (currentMillis - pirPreviousMillis >= pirInterval) {

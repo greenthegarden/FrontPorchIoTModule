@@ -16,11 +16,11 @@ void publish_pir_status()
   strcpy_P(prog_buffer, (char*)pgm_read_word(&(STATUS_TOPICS[7])));
   if(previousPirDetection) {
     DEBUG_LOG(1, "pir sensor detection");
-    mqtt_client.publish(prog_buffer, "1");
+    mqttClient.publish(prog_buffer, "1");
   }
   else {
     DEBUG_LOG(1, "pir sensor NO detection");
-    mqtt_client.publish(prog_buffer, "0");
+    mqttClient.publish(prog_buffer, "0");
   }
 }
 
