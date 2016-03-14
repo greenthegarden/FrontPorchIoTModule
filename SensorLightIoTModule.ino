@@ -12,9 +12,7 @@ boolean mqtt_connect()
     mqttClient.subscribe("porchlight/control/#");
   } else {
       DEBUG_LOG(1, "failed, rc=");
-#if DEBUG_LEVEL>0
-      Serial.print(client.state());
-#endif
+      DEBUG_LOG(1, mqttClient.state());
   }
   return mqttClient.connected();
 }
@@ -33,9 +31,7 @@ void reconnect() {
       mqttClient.subscribe("porchlight/control/#");
     } else {
       DEBUG_LOG(1, "failed, rc=");
-#if DEBUG_LEVEL>0
-      Serial.print(client.state());
-#endif
+      DEBUG_LOG(1, mqttClient.state());
       DEBUG_LOG(1, " try again in 5 seconds ...");
       // Wait 5 seconds before retrying
       delay(5000);
@@ -114,6 +110,7 @@ void callback(char* topic, uint8_t* payload, unsigned int payload_length)
   free(message);
 }
 
+
 /*--------------------------------------------------------------------------------------
   setup()
   Called by the Arduino framework once, before the main loop begins
@@ -133,10 +130,12 @@ void setup()
 
   // Connect to MQTT client
   delay(1500);
-  if (mqttClient.connected())
+  if (mqttClient.connected()) {
+    mqttClientConnected = true;
     duinotech595.blinkOk(3);
-  else
+  } else {
     duinotech595.blinkError(5);
+  }
 
   // set up for PIR sensor
   pinMode(PIR_SENSOR_PIN, INPUT);
@@ -153,15 +152,17 @@ void loop()
   unsigned long currentMillis = millis();
 
   if (!mqttClient.connected()) {
+    mqttClientConnected = false;
     long now = millis();
     if (now - lastReconnectAttempt > reconnectInterval) {
       lastReconnectAttempt = now;
       // Attempt to reconnect
       if (mqtt_connect()) {
         lastReconnectAttempt = 0;
-      }
-      else {
-        duinotech595.blinkError(2);
+        mqttClientConnected = true;
+      } else {
+        DEBUG_LOG(1, "Failed to connect to mqttClient");
+//        duinotech595.blinkError(2);
       }
     }
   } else {
@@ -172,11 +173,17 @@ void loop()
   if (currentMillis - pirPreviousMillis >= pirInterval) {
     pirPreviousMillis = currentMillis;
     read_pir_sensor();
+    // if not connected to mqttClient run different behaviour
+    if (!mqttClientConnected) {
+      no_network_behaviour();
+    }
   }
   
   if (currentMillis - dht22PreviousMillis >= dht22Interval) {
     dht22PreviousMillis = currentMillis;
-    publish_dht22_measurement();
+    if (mqttClientConnected) {
+      publish_dht22_measurement();
+    }
   }
 }
 

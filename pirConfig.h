@@ -10,8 +10,7 @@ const unsigned long pirInterval = 1 * 1000UL;           // interval at which to 
 
 boolean previousPirDetection = false;
 
-void publish_pir_status()
-{
+void publish_pir_status() {
   prog_buffer[0] = '\0';
   strcpy_P(prog_buffer, (char*)pgm_read_word(&(STATUS_TOPICS[7])));
   if(previousPirDetection) {
