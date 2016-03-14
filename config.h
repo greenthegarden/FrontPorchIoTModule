@@ -33,7 +33,7 @@ Duinotech595 duinotech595(LATCH_PIN, DATA_PIN, CLOCK_PIN);
 
 #include "dht22Config.h"
 
-byte mqttClientConnected = false;
+boolean mqttClientConnected = false;
 
 void no_network_behaviour() {
   if (previousPirDetection) {
