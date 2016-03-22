@@ -2,13 +2,13 @@
 #define SENSORLIGHTIOTMODULE_PIRCONFIG_H_
 
 
-const byte PIR_SENSOR_PIN       = 7;
+const byte PIR_SENSOR_PIN             = 7;
 
-unsigned long pirPreviousMillis = 0;
+unsigned long pirPreviousMillis       = 0;
 
-const unsigned long pirInterval = 1 * 1000UL;           // interval at which to take measurement (milliseconds)
+const unsigned long PIR_READ_INTERVAL = 1UL * 1000UL;           // interval at which to take measurement (milliseconds)
 
-boolean previousPirDetection    = false;
+boolean previousPirDetection          = false;
 
 void publish_pir_status() {
   progBuffer[0] = '\0';
