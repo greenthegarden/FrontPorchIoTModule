@@ -3,43 +3,21 @@
 boolean mqtt_connect()
 {
   DEBUG_LOG(1, "Attempting MQTT connection ...");
-  if (mqttClient.connect(mqtt_client_id)) {
+  if (mqttClient.connect(mqttClientId)) {
     DEBUG_LOG(1, "  connected");
-    // Once connected, publish an announcement...
+    // Once connected, publish an announcement ...
     publish_connected();
     publish_ip_address();
     // ... and subscribe to topics (should have list)
-    mqttClient.subscribe("porchlight/control/#");
+    mqttClient.subscribe("sensorlight/control/#");
   } else {
-      DEBUG_LOG(1, "failed, rc=");
+      DEBUG_LOG(1, "failed, rc = ");
       DEBUG_LOG(1, mqttClient.state());
   }
   return mqttClient.connected();
 }
 
-void reconnect() {
-  // Loop until we're reconnected
-  while (!mqttClient.connected()) {
-    DEBUG_LOG(1, "Attempting MQTT connection ...");
-    // Attempt to connect
-    if (mqttClient.connect(mqtt_client_id)) {
-      DEBUG_LOG(1, "  connected");
-      // Once connected, publish an announcement...
-      publish_connected();
-      publish_ip_address();
-      // ... and subscribe to topics (should have list)
-      mqttClient.subscribe("porchlight/control/#");
-    } else {
-      DEBUG_LOG(1, "failed, rc=");
-      DEBUG_LOG(1, mqttClient.state());
-      DEBUG_LOG(1, " try again in 5 seconds ...");
-      // Wait 5 seconds before retrying
-      delay(5000);
-    }
-  }
-}
-
-void callback(char* topic, uint8_t* payload, unsigned int payload_length)
+void callback(char* topic, uint8_t* payload, unsigned int payloadLength)
 {
   // handle message arrived
   /* topic = part of the variable header:has topic name of the topic where the publish received
@@ -52,37 +30,35 @@ void callback(char* topic, uint8_t* payload, unsigned int payload_length)
   */
 
   DEBUG_LOG(1, "Payload length is");
-  DEBUG_LOG(1, payload_length);
+  DEBUG_LOG(1, payloadLength);
 
   // Copy the payload to the new buffer
-  char* message = (char*)malloc((sizeof(char) * payload_length) + 1); // get the size of the bytes and store in memory
-  memcpy(message, payload, payload_length * sizeof(char));        // copy the memory
-  message[payload_length * sizeof(char)] = '\0';                  // add terminating character
+  char* message = (char*)malloc((sizeof(char) * payloadLength) + 1); // get the size of the bytes and store in memory
+  memcpy(message, payload, payloadLength * sizeof(char));        // copy the memory
+  message[payloadLength * sizeof(char)] = '\0';                  // add terminating character
 
   DEBUG_LOG(1, "Message with topic");
   DEBUG_LOG(1, topic);
   DEBUG_LOG(1, "arrived with payload");
   DEBUG_LOG(1, message);
 
-  byte topic_idx = 0;
-  boolean control_topic_found = false;
+  byte topicIdx = 0;
+  boolean controlTopicFound = false;
 
   // find if topic is matched
   for (byte i = 0; i < ARRAY_SIZE(CONTROL_TOPICS); i++) {
-    prog_buffer[0] = '\0';
-    strcpy_P(prog_buffer, (PGM_P)pgm_read_word(&(CONTROL_TOPICS[i])));
-    if (strcmp(topic, prog_buffer) == 0) {
-      topic_idx = i;
-      control_topic_found = true;
+    progBuffer[0] = '\0';
+    strcpy_P(progBuffer, (PGM_P)pgm_read_word(&(CONTROL_TOPICS[i])));
+    if (strcmp(topic, progBuffer) == 0) {
+      topicIdx = i;
+      controlTopicFound = true;
       break;
     }
   }
 
-  if (control_topic_found) {
-
+  if (controlTopicFound) {
     DEBUG_LOG(1, "Control topic index");
     DEBUG_LOG(1, topic_idx);
-
     //switch to case statements
     if (topic_idx == 0) {  // topic is LED_CONTROL
       DEBUG_LOG(1, "LED_CONTROL topic arrived");
@@ -123,13 +99,13 @@ void setup()
 
   // Configure Ethernet
   Ethernet.begin(mac, ip);
+  delay(1500);
   
   // set up for Duinotech 595
   duinotech595.init();
   duinotech595.sequenceTest(1000,0);
 
   // Connect to MQTT client
-  delay(1500);
   if (mqttClient.connected()) {
     mqttClientConnected = true;
     duinotech595.blinkOk(3);
@@ -149,20 +125,15 @@ void setup()
   --------------------------------------------------------------------------------------*/
 void loop()
 {
-  unsigned long currentMillis = millis();
+  unsigned long now = millis();
 
   if (!mqttClient.connected()) {
     mqttClientConnected = false;
-    long now = millis();
-    if (now - lastReconnectAttempt > reconnectInterval) {
+    if (now - lastReconnectAttempt > RECONNECTION_ATTEMPT_INTERVAL) {
       lastReconnectAttempt = now;
       // Attempt to reconnect
       if (mqtt_connect()) {
         lastReconnectAttempt = 0;
-        mqttClientConnected = true;
-      } else {
-        DEBUG_LOG(1, "Failed to connect to mqttClient");
-//        duinotech595.blinkError(2);
       }
     }
   } else {
@@ -170,8 +141,8 @@ void loop()
     mqttClient.loop();
   }
 
-  if (currentMillis - pirPreviousMillis >= pirInterval) {
-    pirPreviousMillis = currentMillis;
+  if (now - pirPreviousMillis >= PIR_READ_INTERVAL) {
+    pirPreviousMillis = now;
     read_pir_sensor();
     // if not connected to mqttClient run different behaviour
     if (!mqttClientConnected) {
@@ -179,8 +150,8 @@ void loop()
     }
   }
   
-  if (currentMillis - dht22PreviousMillis >= dht22Interval) {
-    dht22PreviousMillis = currentMillis;
+  if (now - dht22PreviousMillis >= DHT22_READ_INTERVAL) {
+    dht22PreviousMillis = now;
     if (mqttClientConnected) {
       publish_dht22_measurement();
     }
