@@ -1,5 +1,5 @@
-#ifndef FRONTPORCHIOTMODULE_CONFIG_H_
-#define FRONTPORCHIOTMODULE_CONFIG_H_
+#ifndef SENSORLIGHTIOTMODULE_CONFIG_H_
+#define SENSORLIGHTIOTMODULE_CONFIG_H_
 
 
 #include "debug.h"
@@ -9,8 +9,8 @@
 
 
 const byte BUFFER_SIZE            = 32;
-char prog_buffer[BUFFER_SIZE];
-char char_buffer[BUFFER_SIZE];
+char progBuffer[BUFFER_SIZE];
+char charBuffer[BUFFER_SIZE];
 
 const int FLOAT_DECIMAL_PLACES    = 1;
 
@@ -44,5 +44,5 @@ void no_network_behaviour() {
 }
 
 
-#endif   /* FRONTPORCHIOTMODULE_CONFIG_H_ */
+#endif   /* SENSORLIGHTIOTMODULE_CONFIG_H_ */
 
