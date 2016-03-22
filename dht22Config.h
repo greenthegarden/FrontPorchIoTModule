@@ -1,58 +1,59 @@
-#ifndef FRONTPORCHIOTMODULE_DHT22CONFIG_H_
-#define FRONTPORCHIOTMODULE_DHT22CONFIG_H_
+#ifndef SENSORLIGHTIOTMODULE_DHT22CONFIG_H_
+#define SENSORLIGHTIOTMODULE_DHT22CONFIG_H_
 
 
 #include <dht.h>                // DHT22 temperature/humidty sensor library
 
+
 dht DHT;
 
-const int DHT22_PIN = 10;
+const int DHT22_PIN               = 10;
 
-unsigned long dht22PreviousMillis = 0;
+unsigned long dht22PreviousMillis = 0UL;
 
-const long dht22Interval = 5 * 60UL * 1000UL;           // interval at which to take measurement (milliseconds)
+const long dht22Interval          = 5UL * 60UL * 1000UL;           // interval at which to take measurement (milliseconds)
 
 
 // DHT22 status messages
-const char status_ok[]                PROGMEM = "OK";
-const char checksum_error[]           PROGMEM = "Checksum error";
-const char timeout_error[]            PROGMEM = "Time out error";
-const char connect_error[]            PROGMEM = "Connect error";
-const char ack_low_error[]            PROGMEM = "Ack Low error";
-const char ack_high_error[]           PROGMEM = "Ack High error";
-const char unknown_error[]            PROGMEM = "Unknown error";
+const char DHT22_STATUS_OK[]                PROGMEM = "OK";
+const char DHT22_CHECKSUM_ERROR[]           PROGMEM = "Checksum error";
+const char DHT22_TIMEOUT_ERROR[]            PROGMEM = "Time out error";
+const char DHT22_CONNECT_ERROR[]            PROGMEM = "Connect error";
+const char DHT22_ACK_LOW_ERROR[]            PROGMEM = "Ack Low error";
+const char DHT22_ACK_HIGH_ERROR[]           PROGMEM = "Ack High error";
+const char DHT22_UNKNOWN_ERROR[]            PROGMEM = "Unknown error";
 
-PGM_P const dht22_status_messages[]   PROGMEM = { status_ok,        // idx = 0
-                                                  checksum_error,   // idx = 1
-                                                  timeout_error,    // idx = 2
-                                                  connect_error,    // idx = 3
-                                                  ack_low_error,    // idx = 4
-                                                  ack_high_error,   // idx = 5
-                                                  unknown_error,    // idx = 6
+PGM_P const DHT22_STATUS_MESSAGES[]   PROGMEM = { DHT22_STATUS_OK,        // idx = 0
+                                                  DHT22_CHECKSUM_ERROR,   // idx = 1
+                                                  DHT22_TIMEOUT_ERROR,    // idx = 2
+                                                  DHT22_CONNECT_ERROR,    // idx = 3
+                                                  DHT22_ACK_LOW_ERROR,    // idx = 4
+                                                  DHT22_ACK_HIGH_ERROR,   // idx = 5
+                                                  DHT22_UNKNOWN_ERROR,    // idx = 6
                                                 };
 
 void publish_temperature_measurement()
 {
-  prog_buffer[0] = '\0';
-  strcpy_P(prog_buffer, (char*)pgm_read_word(&(STATUS_TOPICS[9])));
+  progBuffer[0] = '\0';
+  strcpy_P(progBuffer, (char*)pgm_read_word(&(STATUS_TOPICS[9])));
   DEBUG_LOG(3, "DHT22 temperature measurement: ");
   // value is stored in DHT object
   DEBUG_LOG(3, DHT.temperature);
-  char_buffer[0] = '\0';
-  dtostrf(DHT.temperature, 1, FLOAT_DECIMAL_PLACES, char_buffer);
-  mqttClient.publish(prog_buffer, char_buffer);
+  charBuffer[0] = '\0';
+  dtostrf(DHT.temperature, 1, FLOAT_DECIMAL_PLACES, charBuffer);
+  mqttClient.publish(progBuffer, charBuffer);
 }
 
 void publish_humidity_measurement()
 {
   prog_buffer[0] = '\0';
-  strcpy_P(prog_buffer, (char*)pgm_read_word(&(STATUS_TOPICS[10])));
+  strcpy_P(progBuffer, (char*)pgm_read_word(&(STATUS_TOPICS[10])));
   DEBUG_LOG(3, "DHT22 humidity measurement: ");
   // value is stored in DHT object
   DEBUG_LOG(3, DHT.humidity);
-  char_buffer[0] = '\0';
-  dtostrf(DHT.humidity, 1, FLOAT_DECIMAL_PLACES, char_buffer);
-  mqttClient.publish(prog_buffer, char_buffer);
+  charBuffer[0] = '\0';
+  dtostrf(DHT.humidity, 1, FLOAT_DECIMAL_PLACES, charBuffer);
+  mqttClient.publish(progBuffer, charBuffer);
 }
 
 void publish_dht22_measurement()
@@ -65,57 +66,62 @@ void publish_dht22_measurement()
   DEBUG_LOG(1, chk);
   DEBUG_LOG(1, "  string: ");
 
-  prog_buffer[0] = '\0';
-  strcpy_P(prog_buffer, (char*)pgm_read_word(&(STATUS_TOPICS[8])));
+  progBuffer[0] = '\0';
+  strcpy_P(progBuffer, (char*)pgm_read_word(&(STATUS_TOPICS[8])));
 
+  char_buffer[0] = '\0';
   switch (chk) {
     case DHTLIB_OK :
       DEBUG_LOG(3, "OK");
-      char_buffer[0] = '\0';
-      strcpy_P(char_buffer, (char*)pgm_read_word(&(dht22_status_messages[0])));
-      mqttClient.publish(prog_buffer, char_buffer);
-      publish_temperature_measurement();
-      publish_humidity_measurement();
+//      charBuffer[0] = '\0';
+      strcpy_P(charBuffer, (char*)pgm_read_word(&(DHT22_STATUS_MESSAGES[0])));
+//      mqttClient.publish(progBuffer, charBuffer);
       break;
     case DHTLIB_ERROR_CHECKSUM :
       DEBUG_LOG(3, "Checksum error");
-      char_buffer[0] = '\0';
-      strcpy_P(char_buffer, (char*)pgm_read_word(&(dht22_status_messages[1])));
-      mqttClient.publish(prog_buffer, char_buffer);
+//      charBuffer[0] = '\0';
+      strcpy_P(charBuffer, (char*)pgm_read_word(&(DHT22_STATUS_MESSAGES[1])));
+//      mqttClient.publish(progBuffer, charBuffer);
       break;
     case DHTLIB_ERROR_TIMEOUT :
       DEBUG_LOG(3, "Time out error,\t");
-      char_buffer[0] = '\0';
-      strcpy_P(char_buffer, (char*)pgm_read_word(&(dht22_status_messages[2])));
-      mqttClient.publish(prog_buffer, char_buffer);
+//      charBuffer[0] = '\0';
+      strcpy_P(charBuffer, (char*)pgm_read_word(&(DHT22_STATUS_MESSAGES[2])));
+//      mqttClient.publish(progBuffer, charBuffer);
       break;
     case DHTLIB_ERROR_CONNECT :
       DEBUG_LOG(3, "Connect error");
-      char_buffer[0] = '\0';
-      strcpy_P(char_buffer, (char*)pgm_read_word(&(dht22_status_messages[3])));
-      mqttClient.publish(prog_buffer, char_buffer);
+//      charBuffer[0] = '\0';
+      strcpy_P(charBuffer, (char*)pgm_read_word(&(DHT22_STATUS_MESSAGES[3])));
+//      mqttClient.publish(progBuffer, charBuffer);
       break;
     case DHTLIB_ERROR_ACK_L :
       DEBUG_LOG(3, "Ack Low error");
-      char_buffer[0] = '\0';
-      strcpy_P(char_buffer, (char*)pgm_read_word(&(dht22_status_messages[4])));
-      mqttClient.publish(prog_buffer, char_buffer);
+//      charBuffer[0] = '\0';
+      strcpy_P(charBuffer, (char*)pgm_read_word(&(dht22_status_messages[4])));
+//      mqttClient.publish(progBuffer, charBuffer);
       break;
     case DHTLIB_ERROR_ACK_H :
       DEBUG_LOG(3, "Ack High error");
-      char_buffer[0] = '\0';
-      strcpy_P(char_buffer, (char*)pgm_read_word(&(dht22_status_messages[5])));
-      mqttClient.publish(prog_buffer, char_buffer);
+//      charBuffer[0] = '\0';
+      strcpy_P(charBuffer, (char*)pgm_read_word(&(DHT22_STATUS_MESSAGES[5])));
+//      mqttClient.publish(prog_buffer, char_buffer);
       break;
     default :
       DEBUG_LOG(3, "Unknown error");
-      char_buffer[0] = '\0';
-      strcpy_P(char_buffer, (char*)pgm_read_word(&(dht22_status_messages[6])));
-      mqttClient.publish(prog_buffer, char_buffer);
+//      charBuffer[0] = '\0';
+      strcpy_P(char_buffer, (char*)pgm_read_word(&(DHT22_STATUS_MESSAGES[6])));
+//      mqttClient.publish(progBuffer, charBuffer);
       break;
+  }
+  mqttClient.publish(progBuffer, charBuffer);
+  
+  if (chk == DHTLIB_OK) {
+    publish_temperature_measurement();
+    publish_humidity_measurement();
   }
 }
 
 
-#endif  /* FRONTPORCHIOTMODULE_DHT22CONFIG_H_ */
+#endif  /* SENSORLIGHTIOTMODULE_DHT22CONFIG_H_ */
 
