@@ -4,7 +4,7 @@
 
 const byte PIR_SENSOR_PIN             = 7;
 
-unsigned long pirPreviousMillis       = 0;
+unsigned long pirPreviousMillis       = 0UL;
 
 const unsigned long PIR_READ_INTERVAL = 1UL * 1000UL;           // interval at which to take measurement (milliseconds)
 

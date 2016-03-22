@@ -46,7 +46,7 @@ void publish_temperature_measurement()
 
 void publish_humidity_measurement()
 {
-  prog_buffer[0] = '\0';
+  progBuffer[0] = '\0';
   strcpy_P(progBuffer, (char*)pgm_read_word(&(STATUS_TOPICS[10])));
   DEBUG_LOG(3, "DHT22 humidity measurement: ");
   // value is stored in DHT object
@@ -69,7 +69,7 @@ void publish_dht22_measurement()
   progBuffer[0] = '\0';
   strcpy_P(progBuffer, (char*)pgm_read_word(&(STATUS_TOPICS[8])));
 
-  char_buffer[0] = '\0';
+  charBuffer[0] = '\0';
   switch (chk) {
     case DHTLIB_OK :
       DEBUG_LOG(3, "OK");
@@ -98,7 +98,7 @@ void publish_dht22_measurement()
     case DHTLIB_ERROR_ACK_L :
       DEBUG_LOG(3, "Ack Low error");
 //      charBuffer[0] = '\0';
-      strcpy_P(charBuffer, (char*)pgm_read_word(&(dht22_status_messages[4])));
+      strcpy_P(charBuffer, (char*)pgm_read_word(&(DHT22_STATUS_MESSAGES[4])));
 //      mqttClient.publish(progBuffer, charBuffer);
       break;
     case DHTLIB_ERROR_ACK_H :
@@ -110,7 +110,7 @@ void publish_dht22_measurement()
     default :
       DEBUG_LOG(3, "Unknown error");
 //      charBuffer[0] = '\0';
-      strcpy_P(char_buffer, (char*)pgm_read_word(&(DHT22_STATUS_MESSAGES[6])));
+      strcpy_P(charBuffer, (char*)pgm_read_word(&(DHT22_STATUS_MESSAGES[6])));
 //      mqttClient.publish(progBuffer, charBuffer);
       break;
   }

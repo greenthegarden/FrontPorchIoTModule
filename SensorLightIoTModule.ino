@@ -58,9 +58,9 @@ void callback(char* topic, uint8_t* payload, unsigned int payloadLength)
 
   if (controlTopicFound) {
     DEBUG_LOG(1, "Control topic index");
-    DEBUG_LOG(1, topic_idx);
+    DEBUG_LOG(1, topicIdx);
     //switch to case statements
-    if (topic_idx == 0) {  // topic is LED_CONTROL
+    if (topicIdx == 0) {  // topic is LED_CONTROL
       DEBUG_LOG(1, "LED_CONTROL topic arrived");
       if (strcmp(message, "OFF") == 0)
         duinotech595.off();

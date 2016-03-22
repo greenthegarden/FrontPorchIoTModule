@@ -12,7 +12,7 @@ const int MQTT_PORT                               = 1883;
 //#define MQTT_MAX_PACKET_SIZE                      168
 //#define MQTT_KEEPALIVE                            300
 
-unsigned long lastReconnectAttempt                = 0;
+unsigned long lastReconnectAttempt                = 0UL;
 const unsigned long RECONNECTION_ATTEMPT_INTERVAL = 30UL * 1000UL;  // attempt to reconnect every 30 seconds
 
 //const char COMMAND_SEPARATOR        = ':';
