@@ -6,15 +6,14 @@
 
 
 // MQTT parameters
-//byte mqtt_server_addr[]               = { 192, 168, 1, 30 };  // Airology
-byte mqttServerAddr[]                 = { 192, 168, 1, 55 };  // Pi eth0 interface
-char mqttClientId[]                   = "porchlight";
-const int MQTT_PORT                   = 1883;
-//#define MQTT_MAX_PACKET_SIZE            168
-//#define MQTT_KEEPALIVE                  300
+byte mqttServerAddr[]                             = { 192, 168, 1, 55 };  // Pi eth0 interface
+char mqttClientId[]                               = "sensorlight";
+const int MQTT_PORT                               = 1883;
+//#define MQTT_MAX_PACKET_SIZE                      168
+//#define MQTT_KEEPALIVE                            300
 
-unsigned long lastReconnectAttempt    = 0;
-const unsigned long reconnectInterval = 30UL * 1000UL;  // attempt to reconnect every 30 seconds
+unsigned long lastReconnectAttempt                = 0;
+const unsigned long RECONNECTION_ATTEMPT_INTERVAL = 30UL * 1000UL;  // attempt to reconnect every 30 seconds
 
 //const char COMMAND_SEPARATOR        = ':';
 
