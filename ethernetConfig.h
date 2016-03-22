@@ -13,6 +13,10 @@ IPAddress ip(192, 168, 1, 90);
 
 EthernetClient ethernetClient;
 
+const unsigned long NETWORK_STARTUP_DELAY = 5000UL;
+
+const byte ETHERNET_CS_PIN = 10;
+
 
 #endif   /* SENSORLIGHTIOTMODULE_ETHERNETCONFIG_H_ */
 

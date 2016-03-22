@@ -37,3 +37,4 @@ void read_pir_sensor() {
 
 
 #endif   /* SENSORLIGHTIOTMODULE_PIRCONFIG_H_ */
+

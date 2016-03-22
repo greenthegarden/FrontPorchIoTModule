@@ -17,6 +17,7 @@ const int FLOAT_DECIMAL_PLACES    = 1;
 const int BAUD_RATE               = 9600;
 
 
+#include "sdConfig.h"
 #include "ethernetConfig.h"
 #include "mqttConfig.h"
 
