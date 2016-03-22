@@ -97,46 +97,34 @@ void setup()
   Serial.begin(BAUD_RATE);
 #endif
 
-// configure chip select pins for SD card and Ethernet
+  // configure chip select pins for SD card and Ethernet
   pinMode(SDCARD_CS_PIN, OUTPUT);      // set SD card chip select as output:
   pinMode(ETHERNET_CS_PIN, OUTPUT);    // set Ethernet chip select as output:
 
   pinMode(ETHERNET_CS_PIN, HIGH);      // disable ethernet by pulling high its chip select:
-  DEBUG_LOG(1, "Initializing SD card...");
+  // Setup the SD card 
+  DEBUG_LOG(1, "Calling SD.begin() ...");
   if (!SD.begin(SDCARD_CS_PIN)) {
-    DEBUG_LOG(1, "initialization failed!");
-    DEBUG_LOG(1, "using predefined cfg values");
+    DEBUG_LOG(1, "SD.begin() failed. Check: ");
+    DEBUG_LOG(1, "  card insertion,");
+    DEBUG_LOG(1, "  SD shield I/O pins and chip select,");
+    DEBUG_LOG(1, "  card formatting.");
+    return;
   }
-  DEBUG_LOG(1, "initialization done.");
+  DEBUG_LOG(1, "... succeeded.");
 
-  readFile();                       // read parameters from SD card:
-
-  delay(150);                      // allow some time for Ethernet processor to come out of reset on Arduino power up:
-  Ethernet.begin(mac, ip);
-
-
-  // open the file for reading:
-  configFile = SD.open(configFilename);
-  if (configFile) {
-    DEBUG_LOG(1, configFilename);
-    // read from the file until there's nothing else in it:
-    while (configFile.available()) {
-      Serial.write(configFile.read());
-    }
-    // close the file:
-    configFile.close();
-  } else {
-    // if the file didn't open, print an error:
-    DEBUG_LOG(1, "error opening test.txt");
-  }
-
+  // Read our configuration from the SD card file.
+  readEthernetConfiguration();
+  
   // Configure Ethernet
+  delay(NETWORK_STARTUP_DELAY); // allow some time for Ethernet processor to come out of reset on Arduino power up:
   Ethernet.begin(mac, ip);
-  delay(NETWORK_STARTUP_DELAY);
   
   // set up for Duinotech 595
   duinotech595.init();
   duinotech595.sequenceTest(1000,0);
+
+  readMqttConfiguration();
 
   // Connect to MQTT client
   if (mqttClient.connected()) {

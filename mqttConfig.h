@@ -7,9 +7,10 @@
 
 // MQTT parameters
 //byte mqttServerAddr[]                             = { 192, 168, 1, 55 };  // Pi eth0 interface
-byte mqttServerAddr[]                             = { 192, 168, 1, 205 };  // Pi eth0 interface
-char mqttClientId[]                               = "sensorlight";
-const int MQTT_PORT                               = 1883;
+//byte mqttServerAddr[]                             = { 192, 168, 1, 205 };  // Pi eth0 interface
+IPAddress mqttServerAddr(192, 168, 1, 55);                            
+char* mqttClientId                                = "sensorlight";
+int mqttPort                                      = 1883;
 //#define MQTT_MAX_PACKET_SIZE                      168
 //#define MQTT_KEEPALIVE                            300
 
@@ -56,11 +57,61 @@ const char LED_CONTROL[]        PROGMEM = "sensorlight/control/led";
 PGM_P const CONTROL_TOPICS[]    PROGMEM = { LED_CONTROL,         // idx = 0
                                           };
 
+boolean readMqttConfiguration() {
+  /*
+   * Length of the longest line expected in the config file.
+   * The larger this number, the more memory is used
+   * to read the file.
+   * You probably won't need to change this number.
+   */
+  const uint8_t CONFIG_LINE_LENGTH = 127;
+  
+  // The open configuration file.
+  SDConfigFile cfg;
+  
+  // Open the configuration file.
+  if (!cfg.begin(CONFIG_FILE, CONFIG_LINE_LENGTH)) {
+    DEBUG_LOG(1, "Failed to open configuration file: ");
+    DEBUG_LOG(1, CONFIG_FILE);
+    return false;
+  }
+  
+  // Read each setting from the file.
+  while (cfg.readNextSetting()) {
+    
+    // Put a nameIs() block here for each setting you have.
+    
+    if (cfg.nameIs("mqttBrokerIP")) {
+      // Dynamically allocate a copy of the string.
+      char* str = cfg.copyValue();
+      mqttServerAddr.fromString(str);
+      DEBUG_LOG(1, "Read mqttBrokerIP: ");
+      DEBUG_LOG(1, str);
+    } else if (cfg.nameIs("mqttClientId")) { // mqttClientId string (char *)
+      // Dynamically allocate a copy of the string.
+      mqttClientId = cfg.copyValue();
+      DEBUG_LOG(1, "Read mqttClientId: ");
+      DEBUG_LOG(1, mqttClientId);
+    } else if (cfg.nameIs("mqttPort")) { // mqttPort integer
+      mqttPort = cfg.getIntValue();
+      DEBUG_LOG(1, "Read mqttPort: ");
+      DEBUG_LOG(1, mqttPort);
+    } else {
+      // report unrecognized names.
+      DEBUG_LOG(1, "Unknown name in config: ");
+      DEBUG_LOG(1, cfg.getName());
+    }
+  }
+  
+  // clean up
+  cfg.end();
+}
+
 
 // callback function definition
 void callback(char* topic, uint8_t* payload, unsigned int length);
 
-PubSubClient   mqttClient(mqttServerAddr, MQTT_PORT, callback, ethernetClient);
+PubSubClient   mqttClient(mqttServerAddr, mqttPort, callback, ethernetClient);
 
 void publish_connected()
 {
