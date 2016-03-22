@@ -105,19 +105,19 @@ while True :
 				if colour in led_colour_valid_inputs :
 					if colour is 'g' :
 						print("publish GREEN")
-						client.publish("porchlight/control/led", "GREEN");
+						client.publish("sensorlight/control/led", "GREEN");
 					elif colour is 'r' :
-						client.publish("porchlight/control/led", "RED");
+						client.publish("sensorlight/control/led", "RED");
 					elif colour is 'b' :
-						client.publish("porchlight/control/led", "BLUE");
+						client.publish("sensorlight/control/led", "BLUE");
 					elif colour is 'w' :
-						client.publish("porchlight/control/led", "WHITE");
+						client.publish("sensorlight/control/led", "WHITE");
 					elif colour is 'g' :
-						client.publish("porchlight/control/led", "GREEN");
+						client.publish("sensorlight/control/led", "GREEN");
 			elif command_type is 'o' :
-				client.publish("porchlight/control/led", "ON");
+				client.publish("sensorlight/control/led", "ON");
 			elif command_type is 'f' :
-				client.publish("porchlight/control/led", "OFF")
+				client.publish("sensorlight/control/led", "OFF")
 			else :
 				print("Should not be here!!")
 		else :

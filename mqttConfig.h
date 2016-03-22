@@ -6,7 +6,8 @@
 
 
 // MQTT parameters
-byte mqttServerAddr[]                             = { 192, 168, 1, 55 };  // Pi eth0 interface
+//byte mqttServerAddr[]                             = { 192, 168, 1, 55 };  // Pi eth0 interface
+byte mqttServerAddr[]                             = { 192, 168, 1, 205 };  // Pi eth0 interface
 char mqttClientId[]                               = "sensorlight";
 const int MQTT_PORT                               = 1883;
 //#define MQTT_MAX_PACKET_SIZE                      168
