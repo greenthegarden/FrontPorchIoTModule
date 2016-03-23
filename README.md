@@ -1,6 +1,6 @@
 # Sensor Light IoT Module
 
-Project is for a replacement 'smart' LED based sensor light module based around the [duinotech 595](http://www.jaycar.com.au/Kits%2C-Science-%26-Learning/Science-Lab-Equipment/Instruments/Arduino-Compatible-4-x-5050-RGB-LED-Module/p/XC4466) RGB led module and PIR Motion Sensor Module. The smart are provided via an MQTT interface which allow control over the operation of the module, which also inlcudes the provition for a Includes support for a [DHT22](http://www.freetronics.com.au/collections/modules/products/humidity-and-temperature-sensor-module) temperature/humidity sensor.
+Project is for a replacement 'smart' LED based sensor light module based around the [duinotech 595](http://www.jaycar.com.au/Kits%2C-Science-%26-Learning/Science-Lab-Equipment/Instruments/Arduino-Compatible-4-x-5050-RGB-LED-Module/p/XC4466) RGB led module and PIR Motion Sensor Module. The 'smarts' are provided via an MQTT interface which allows control over the operation of the module. Provition for a [DHT22](http://www.freetronics.com.au/collections/modules/products/humidity-and-temperature-sensor-module) temperature/humidity sensor is also included.
 
 The following libraries are required to compile the code:
 * MQTT (PubSubClient): https://github.com/knolleary/pubsubclient
