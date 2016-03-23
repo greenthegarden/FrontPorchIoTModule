@@ -97,6 +97,7 @@ void setup()
   Serial.begin(BAUD_RATE);
 #endif
 
+#if USE_SDCARD
   // configure chip select pins for SD card and Ethernet
   pinMode(SDCARD_CS_PIN, OUTPUT);      // set SD card chip select as output:
   pinMode(ETHERNET_CS_PIN, OUTPUT);    // set Ethernet chip select as output:
@@ -105,17 +106,17 @@ void setup()
   // Setup the SD card 
   DEBUG_LOG(1, "Calling SD.begin() ...");
   if (!SD.begin(SDCARD_CS_PIN)) {
-    DEBUG_LOG(1, "SD.begin() failed. Check: ");
-    DEBUG_LOG(1, "  card insertion,");
-    DEBUG_LOG(1, "  SD shield I/O pins and chip select,");
-    DEBUG_LOG(1, "  card formatting.");
-    return;
+    DEBUG_LOG(1, "SD.begin() failed.");
+    DEBUG_LOG(1, "Using default settings");
   }
   DEBUG_LOG(1, "... succeeded.");
 
-  // Read our configuration from the SD card file.
+  // Read configurations from the SD card file.
   readEthernetConfiguration();
-  
+
+  readMqttConfiguration();
+#endif
+
   // Configure Ethernet
   delay(NETWORK_STARTUP_DELAY); // allow some time for Ethernet processor to come out of reset on Arduino power up:
   Ethernet.begin(mac, ip);
@@ -123,8 +124,6 @@ void setup()
   // set up for Duinotech 595
   duinotech595.init();
   duinotech595.sequenceTest(1000,0);
-
-  readMqttConfiguration();
 
   // Connect to MQTT client
   if (mqttClient.connected()) {
@@ -135,8 +134,6 @@ void setup()
 
   // set up for PIR sensor
   pinMode(PIR_SENSOR_PIN, INPUT);
-
-  // set up for DHT22 sensor
 }
 
 /*--------------------------------------------------------------------------------------
@@ -154,6 +151,7 @@ void loop()
       // Attempt to reconnect
       if (mqtt_connect()) {
         lastReconnectAttempt = 0;
+        mqttClientConnected = true;
       }
     }
   } else {

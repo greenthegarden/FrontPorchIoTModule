@@ -17,7 +17,12 @@ const int FLOAT_DECIMAL_PLACES    = 1;
 const int BAUD_RATE               = 9600;
 
 
+#define USE_SDCARD true
+
+#if USE_SDCARD
 #include "sdConfig.h"
+#endif
+
 #include "ethernetConfig.h"
 #include "mqttConfig.h"
 

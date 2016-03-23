@@ -104,44 +104,6 @@ const char CONFIG_FILE[] = "SensorLightIoTModule.cfg";
 //  Serial.println(settings[4]);
 //}
 
-boolean readConfiguration() {
-  /*
-   * Length of the longest line expected in the config file.
-   * The larger this number, the more memory is used
-   * to read the file.
-   * You probably won't need to change this number.
-   */
-  const uint8_t CONFIG_LINE_LENGTH = 127;
-  
-  // The open configuration file.
-  SDConfigFile cfg;
-  
-  // Open the configuration file.
-  if (!cfg.begin(CONFIG_FILE, CONFIG_LINE_LENGTH)) {
-    DEBUG_LOG(1, "Failed to open configuration file: ");
-    DEBUG_LOG(1, CONFIG_FILE);
-    return false;
-  }
-  
-  // Read each setting from the file.
-  while (cfg.readNextSetting()) {
-    
-    // Put a nameIs() block here for each setting you have.
-    
-    if (cfg.nameIs("mqttPort")) { // mqttPort integer
-    } else if (cfg.nameIs("mqttClientId")) { // mqttClientId string (char *)
-      // Dynamically allocate a copy of the string.
-      //mqttClientId = cfg.copyValue();
-    } else {
-      // report unrecognized names.
-      DEBUG_LOG(1, "Unknown name in config: ");
-      DEBUG_LOG(1, cfg.getName());
-    }
-  }
-  
-  // clean up
-  cfg.end();
-}
 
 #endif   /* SENSORLIGHTIOTMODULE_PIRCONFIG_H_ */
 

@@ -19,6 +19,7 @@ IPAddress ip(192, 168, 1, 90);
 EthernetClient ethernetClient;
 
 
+#if USE_SDCARD
 boolean readEthernetConfiguration() {
   /*
    * Length of the longest line expected in the config file.
@@ -26,7 +27,7 @@ boolean readEthernetConfiguration() {
    * to read the file.
    * You probably won't need to change this number.
    */
-  const uint8_t CONFIG_LINE_LENGTH = 127;
+  const uint8_t CONFIG_LINE_LENGTH = 32;
   
   // The open configuration file.
   SDConfigFile cfg;
@@ -59,6 +60,7 @@ boolean readEthernetConfiguration() {
   // clean up
   cfg.end();
 }
+#endif
 
 
 #endif   /* SENSORLIGHTIOTMODULE_ETHERNETCONFIG_H_ */

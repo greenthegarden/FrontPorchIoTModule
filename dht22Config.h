@@ -7,7 +7,7 @@
 
 dht DHT;
 
-const int DHT22_PIN                     = 10;
+const int DHT22_PIN                     = 3;
 
 unsigned long dht22PreviousMillis       = 0UL;
 

@@ -6,9 +6,7 @@
 
 
 // MQTT parameters
-//byte mqttServerAddr[]                             = { 192, 168, 1, 55 };  // Pi eth0 interface
-//byte mqttServerAddr[]                             = { 192, 168, 1, 205 };  // Pi eth0 interface
-IPAddress mqttServerAddr(192, 168, 1, 55);                            
+IPAddress mqttServerAddr(192, 168, 1, 55);        // Pi eth0 interface                      
 char* mqttClientId                                = "sensorlight";
 int mqttPort                                      = 1883;
 //#define MQTT_MAX_PACKET_SIZE                      168
@@ -57,6 +55,7 @@ const char LED_CONTROL[]        PROGMEM = "sensorlight/control/led";
 PGM_P const CONTROL_TOPICS[]    PROGMEM = { LED_CONTROL,         // idx = 0
                                           };
 
+#if USE_SDCARD
 boolean readMqttConfiguration() {
   /*
    * Length of the longest line expected in the config file.
@@ -64,7 +63,7 @@ boolean readMqttConfiguration() {
    * to read the file.
    * You probably won't need to change this number.
    */
-  const uint8_t CONFIG_LINE_LENGTH = 127;
+  const uint8_t CONFIG_LINE_LENGTH = 32;
   
   // The open configuration file.
   SDConfigFile cfg;
@@ -106,7 +105,7 @@ boolean readMqttConfiguration() {
   // clean up
   cfg.end();
 }
-
+#endif
 
 // callback function definition
 void callback(char* topic, uint8_t* payload, unsigned int length);
